@@ -34,7 +34,46 @@ export default class Store {
     }
 
     destroy (idOrIds, sync = false) {
+        const performTransaction = () => {
+            // Convert id to id array if not already one.
+            let sequence = idOrIds instanceof Array ? idOrIds : [idOrIds];
 
+            // Convert sequence to sorted array<string> if not already
+            sequence = sequence.map(id => id.toString()).sort();
+
+            // Match all the elements in data map which correspond to requested ids
+            // TODO this really needs some perf love
+            //  ordered this[DATA] by key.id
+            //  removing sequence elements that have been matched
+            //  benchmarking needed for decision
+            let elements = [];
+            for (let [key, value] of this[DATA].entries) {
+                if (sequence.indexOf(key.id) > -1) {
+                    elements.push([key, $clone(value)]);
+                }
+            }
+
+            // Invoke the beforeDestroy actions on every plugin, they should return the same format input.
+            this[WARE].forEach(p => { elements = p.beforeDestroy(elements); });
+
+            // Destroy the elements in the core data map.
+            let destroyedElements = elements.map(k => [k, this[DATA].delete(k)]);
+
+            // Notifiy plugins that the items in destroyedElements were removed. The afterDestroy action should not
+            // be throwing errors, so we'll wrap it.
+            try { this[WARE].forEach(plugin => plugin.afterDestroy(destroyedElements)); }
+            catch (e) { }
+            finally { return destroyedElements; }
+        };
+
+
+        return sync ? performTransaction() : new Promise((success, failure) => {
+            try {
+                success(performTransaction());
+            } catch (error) {
+                failure(error);
+            }
+        });
     }
 
     save (obj, sync = false) {
@@ -58,7 +97,7 @@ export default class Store {
             let pairsSequence = sequence.map(elem => {
                 let key, val;
                 this[DATA].set(
-                    key = $freeze(new Key(elem.id)),
+                    key = $freeze(new Key(elem.id.toString())),
                     val = $freeze($clone(elem)));
                 return [key, val];
             });
@@ -71,8 +110,7 @@ export default class Store {
 
         return sync ? performTransaction() : new Promise((success, failure) => {
             try {
-                performTransaction();
-                success();
+                success(performTransaction());
             } catch (error) {
                 failure(error);
             }

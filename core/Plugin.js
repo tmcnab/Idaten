@@ -12,8 +12,8 @@ export default class Plugin {
         return tupleSequence;
     }
 
-    beforeDestroy (id) {
-        return id;
+    beforeDestroy (keyValueTupleSequence) {
+        return keyValueSequence;
     }
 
     beforeSave (object) {
