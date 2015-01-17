@@ -14,5 +14,9 @@
   "dependencies": {
     "msgpack": "^0.2.4",
     "node-uuid": "^1.4.2"
+  },
+  "repository": {
+      "type": "git",
+      "url": "git://github.com/tmcnab/Idaten.git"
   }
 }
