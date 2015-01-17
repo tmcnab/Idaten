@@ -1,12 +1,3 @@
-export const DATA = require('./fake.json');
-
-
-export function log () {
-    let args = Array.prototype.slice.call(arguments);
-    args.unshift('TEST\t');
-    console.log.apply(console.log, args);
-}
-
 
 export function Suite (name, generator) {
     console.log(`\n ${name} Suite\n`);
@@ -17,24 +8,22 @@ export function Suite (name, generator) {
 }
 
 export function Unit (name, fn) {
-    // this can totally be refactored.
+    const [CROSS, TICK] = ['✗', '✓'];
 
     let wasClean = true;
-    let error = null;
-
+    let err = null;
     try {
         fn();
-    } catch (e) {
+    } catch (error) {
         wasClean = false;
-        error = e;
-    }
-
-    let icon = wasClean ? '✓' : '✗';
-
-    console.log(`\t${icon} ${name}`);
-
-    if (error && error.stack) {
-        console.error("\n", error.stack);
+        err = error;
+    } finally {
+        if (wasClean) {
+            console.log(`\t${TICK} ${name}`);
+        } else {
+            console.error(`\t${CROSS} ${name} (${err.message})\n`);
+            // console.error(err.stack);
+        }
     }
 }
 
@@ -62,3 +51,10 @@ export function throws (fn, message) {
         throw new Error("didn't throw when it was supposed to");
     }
 }
+
+
+// Defining a getter on the exports because loading the giant
+// json file is bad practice for tests that dont need it.
+Object.defineProperty(module.exports, 'DATA', {
+    get: () => require('./fake.json')
+});

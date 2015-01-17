@@ -3,12 +3,16 @@ import Key from './Key';
 import Plugin from './Plugin';
 
 
-//
+// These symbols help hide the core data and plugins
+// (for now exposed through __data__ and __plugins__ props).
 let DATA = Symbol();
 let WARE = Symbol();
 
+
+// Utility functions. Probably need to be looked at for perf.
 let $clone = (o) => JSON.parse(JSON.stringify(o));
 let $freeze = (o) => { Object.freeze(o); return o; };
+
 
 export default class Store {
 

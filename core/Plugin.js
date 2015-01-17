@@ -1,6 +1,8 @@
 export default class Plugin {
 
-    constructor () { }
+    constructor () {
+        throw new Error("Cannot invoke Idaten.Plugin constructor");
+    }
 
     afterDestroy (objectSequence) {
         return objectSequence;
