@@ -22,7 +22,8 @@ export function Unit (name, fn) {
             console.log(`\t${TICK} ${name}`);
         } else {
             console.error(`\t${CROSS} ${name} (${err.message})\n`);
-            console.error(err.stack);
+            if (err.stack)
+                console.error(err.stack);
         }
     }
 }

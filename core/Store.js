@@ -87,7 +87,6 @@ export default class Store {
 
             // Ensure that our sequence is all objects. (TODO make this better, Object.prototype.hasOwnProperty.call)
             if (!sequence.every(elem => typeof elem === 'object')) {
-                console.log('wat')
                 throw new Error("must save object or sequence of objects");
             }
 
@@ -98,12 +97,22 @@ export default class Store {
 
             // Save the sequence, return key-val tuples.
             let pairsSequence = sequence.map(elem => {
-                let key, val;
+                let key, val, oldKey;
+
+                // Find old key.
+                for (let dk of this[DATA].keys()) {
+                    if (dk.id === elem.id.toString()) {
+                        oldKey = dk;
+                        this[DATA].delete(oldKey);
+                        break;
+                    }
+                }
+
                 this[DATA].set(
                     key = new Key(elem.id.toString()),
                     val = $clone(elem)
                 );
-                return [key, val];
+                return [oldKey, key, val];
             });
 
             // For every plugin, call the afterSave function. The afterSave function is not supposed to throw errors
@@ -117,6 +126,7 @@ export default class Store {
             try {
                 success(performTransaction());
             } catch (error) {
+                console.error('[Idaten]\t', error);
                 failure(error);
             }
         });

@@ -44,10 +44,12 @@ Test.Suite(TEST_NAME, function* ()
     yield Test.Unit("Save a single object (async)", () => {
         let store = new Idaten.Store();
         let patient = Test.DATA[0];
+        let error = (e) => { throw e; };
+
         store.save(patient).then((result) => {
             Test.that(result.length === 1);
             Test.that(store.__data__.size === 1);
-        });
+        }, error);
     });
 
     yield Test.Unit("Save a single object then another (sync)", () => {
@@ -70,11 +72,36 @@ Test.Suite(TEST_NAME, function* ()
 
     yield Test.Unit("Save a sequence of objects (async)", () => {
         let store = new Idaten.Store();
+        let error = (e) => { throw e; };
+
         store.save(Test.DATA).then(result => {
             Test.that(result.length === 1000);
             Test.that(store.__data__.size === 1000);
-        }, Test.fail);
+        }, error);
     });
 
-    
+    yield Test.Unit("Ensure that saved object is different reference", () => {
+        let store = new Idaten.Store();
+        let original = Test.DATA[0];
+
+        store.save(original, true);
+
+        let retrieved = store.cursor.next();
+
+        Test.that(original !== retrieved);
+    });
+
+    yield Test.Unit("Ensure that twice saved object results in only one record", () => {
+        let store = new Idaten.Store();
+        let patient = Test.DATA[0];
+
+        store.save(patient, true);
+        store.save(patient, true);
+
+        Test.that(store.__data__.size === 1, `Saw ${store.__data__.size}, expected 1`);
+    });
 });
+
+/*
+let store = new Idaten.Store();
+*/
