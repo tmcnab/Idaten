@@ -87,18 +87,22 @@ export default class Store {
 
             // Ensure that our sequence is all objects. (TODO make this better, Object.prototype.hasOwnProperty.call)
             if (!sequence.every(elem => typeof elem === 'object')) {
+                console.log('wat')
                 throw new Error("must save object or sequence of objects");
             }
 
             // For every plugin, call the beforeSave function.
-            sequence = this[WARE].map(p => p.beforeSave(sequence));
+            this[WARE].forEach(plugin => {
+                sequence = p.beforeSave(sequence);
+            });
 
             // Save the sequence, return key-val tuples.
             let pairsSequence = sequence.map(elem => {
                 let key, val;
                 this[DATA].set(
-                    key = $freeze(new Key(elem.id.toString())),
-                    val = $freeze($clone(elem)));
+                    key = new Key(elem.id.toString()),
+                    val = $clone(elem)
+                );
                 return [key, val];
             });
 
@@ -106,6 +110,7 @@ export default class Store {
             // so we will wrap them and ignore the errors.
             try { this[WARE].forEach(p => p.afterSave(pairsSequence)); }
             catch (e) {}
+            finally { return pairsSequence.map(ts => ts[0]); }
         };
 
         return sync ? performTransaction() : new Promise((success, failure) => {

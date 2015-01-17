@@ -22,13 +22,17 @@ export function Unit (name, fn) {
             console.log(`\t${TICK} ${name}`);
         } else {
             console.error(`\t${CROSS} ${name} (${err.message})\n`);
-            // console.error(err.stack);
+            console.error(err.stack);
         }
     }
 }
 
 export function logPath (name) {
     return require('path').join(__dirname, `${name}.log`);
+}
+
+export function fail (e) {
+    throw e;
 }
 
 export function that (test, message) {
