@@ -4,7 +4,7 @@
   "description": "A modular, in-process data store built using ES6 features.",
   "main": "index.js",
   "scripts": {
-    "test": "./test.sh"
+    "test": "./test/test.sh"
   },
   "author": "",
   "license": "ISC",
