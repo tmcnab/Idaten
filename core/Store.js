@@ -41,23 +41,27 @@ export default class Store {
             // Convert sequence to sorted array<string> if not already
             sequence = sequence.map(id => id.toString()).sort();
 
+            // console.log(sequence);
+
             // Match all the elements in data map which correspond to requested ids
             // TODO this really needs some perf love
             //  ordered this[DATA] by key.id
             //  removing sequence elements that have been matched
             //  benchmarking needed for decision
             let elements = [];
-            for (let [key, value] of this[DATA].entries) {
+            for (let [key, value] of this[DATA].entries()) {
                 if (sequence.indexOf(key.id) > -1) {
                     elements.push([key, $clone(value)]);
                 }
             }
 
+            // console.log(elements);
+
             // Invoke the beforeDestroy actions on every plugin, they should return the same format input.
             this[WARE].forEach(p => { elements = p.beforeDestroy(elements); });
 
             // Destroy the elements in the core data map.
-            let destroyedElements = elements.map(k => [k, this[DATA].delete(k)]);
+            let destroyedElements = elements.map(k => [k[0], this[DATA].delete(k[0])]);
 
             // Notifiy plugins that the items in destroyedElements were removed. The afterDestroy action should not
             // be throwing errors, so we'll wrap it.
@@ -71,6 +75,7 @@ export default class Store {
             try {
                 success(performTransaction());
             } catch (error) {
+                console.error('[Idaten]\t', error);
                 failure(error);
             }
         });

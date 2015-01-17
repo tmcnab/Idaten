@@ -100,6 +100,92 @@ Test.Suite(TEST_NAME, function* ()
 
         Test.that(store.__data__.size === 1, `Saw ${store.__data__.size}, expected 1`);
     });
+
+    yield Test.Unit("Save, destroy single object (sync)", () => {
+        let store = new Idaten.Store();
+        let patient = Test.DATA[0];
+
+        store.save(patient, true);
+        Test.that(store.__data__.size === 1);
+
+        let result = store.destroy(patient.id, true);
+        Test.that(result.length === 1);
+        Test.that(store.__data__.size === 0);
+    });
+
+    yield Test.Unit("Save, destroy single object (async)", () => {
+        let store = new Idaten.Store();
+        let patient = Test.DATA[0];
+
+        store.save(patient, true);
+        Test.that(store.__data__.size === 1);
+
+        let result = store.destroy(patient.id).then(result => {
+            Test.that(result.length === 1);
+            Test.that(store.__data__.size === 0);
+        }, (e) => {
+            throw e;
+        });
+    });
+
+    yield Test.Unit("Save, destroy sequence of objects (sync)", () => {
+        let store = new Idaten.Store();
+
+        store.save(Test.DATA, true);
+        Test.that(store.__data__.size === 1000);
+
+        let allIds = Test.DATA.map(p => p.id);
+        let result = store.destroy(allIds, true);
+
+        Test.that(result.length === allIds.length);
+        Test.that(store.__data__.size === 0);
+    });
+
+    yield Test.Unit("Save, destroy sequence of objects (async)", () => {
+        let store = new Idaten.Store();
+
+        store.save(Test.DATA, true);
+        Test.that(store.__data__.size === 1000);
+
+        let allIds = Test.DATA.map(p => p.id);
+
+        store.destroy(allIds).then(result => {
+            Test.that(result.length === allIds.length);
+            Test.that(store.__data__.size === 0);
+        }, e => {
+            throw e;
+        });
+    });
+
+    yield Test.Unit("Save sequence of objects, destroy fewer objects (sync)", () => {
+        const N = 5, DATA = Test.DATA;
+        let store = new Idaten.Store();
+
+        store.save(DATA, true);
+        Test.that(store.__data__.size === 1000);
+
+        let ids = [DATA[0].id, DATA[123].id, DATA[432].id];
+        let result = store.destroy(ids, true);
+
+        Test.that(result.length === ids.length, `saw ${result.length}, expected ${ids.length}`);
+        Test.that(store.__data__.size === (1000 - ids.length));
+    });
+
+    yield Test.Unit("Save sequence of objects, destroy fewer objects (async)", () => {
+        const N = 5, DATA = Test.DATA;
+        let store = new Idaten.Store();
+
+        store.save(DATA, true);
+        Test.that(store.__data__.size === 1000);
+
+        let ids = [DATA[0].id, DATA[123].id, DATA[432].id];
+        store.destroy(ids).then(result => {
+            Test.that(result.length === ids.length, `saw ${result.length}, expected ${ids.length}`);
+            Test.that(store.__data__.size === (1000 - ids.length));
+        }, e => {
+            throw e;
+        });
+    });
 });
 
 /*
