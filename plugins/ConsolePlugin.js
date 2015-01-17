@@ -1,7 +1,7 @@
-import Idaten from '..';
+import Plugin from '../core/Plugin';
 
 
-export default class ConsolePlugin extends Idaten.Plugin {
+export default class ConsolePlugin extends Plugin {
     constructor (store) { }
 
     beforeDestroy (keyValueTupleSequence) {
