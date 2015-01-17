@@ -77,8 +77,7 @@ export default class Store {
 
     use (Plugin) {
         // TODO check that it derives from Idaten.Plugin
-        let instance = new Plugin();
-        instance.store = this;
+        let instance = new Plugin(this);
         this[WARE].push(instance);
     }
 }

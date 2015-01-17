@@ -1,8 +1,6 @@
 export default class Plugin {
 
-    constructor (store) {
-        this.store = store;
-    }
+    constructor () { }
 
     afterDestroy (objectSequence) {
         return objectSequence;

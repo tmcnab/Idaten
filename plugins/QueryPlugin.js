@@ -3,15 +3,10 @@ import Query from './Query';
 
 
 export default class QueryPlugin extends Plugin {
-    constructor (core_map, store) {
-        super(core_map);
-
+    constructor (store) {
+        super();
         Object.defineProperty(store, 'query', {
-            get: () => this.query
+            get: () => new Query(this.store.cursor)
         });
-    }
-
-    get query () {
-        return new Query(this.cursor);
     }
 }

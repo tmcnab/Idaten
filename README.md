@@ -1,7 +1,7 @@
 Idaten
 ======
 
-Idaten is an experimental in-process, file-backed data store build using ES6 features.
+Idaten is an modular, in-process data store built using ES6 features.
 
 
 Idaten.Store
