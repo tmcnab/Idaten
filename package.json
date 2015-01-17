@@ -1,7 +1,7 @@
 {
   "name": "Idaten",
   "version": "0.1.0",
-  "description": "In-process Distributed JSON Database",
+  "description": "A modular, in-process data store built using ES6 features.",
   "main": "index.js",
   "scripts": {
     "test": "./test.sh"
