@@ -1,5 +1,5 @@
 import Idaten from '..';
-import Test from './Test';
+import Test from './test';
 
 
 const TEST_NAME = "Idaten.Plugins.Query";
@@ -7,5 +7,5 @@ const TEST_NAME = "Idaten.Plugins.Query";
 
 Test.Suite(TEST_NAME, function* ()
 {
-    
+
 });

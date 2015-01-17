@@ -1,5 +1,5 @@
 import Idaten from '..';
-import Test from './Test';
+import Test from './test';
 
 
 const TEST_NAME = "Idaten.Store";
