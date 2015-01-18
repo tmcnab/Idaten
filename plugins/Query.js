@@ -43,6 +43,17 @@ function $reduce (iter, trans, initial) {
     return initial;
 }
 
+function *$skip (iter, number) {
+    for (let elem of iter) {
+        if (number > 0) {
+            number--;
+            continue;
+        } else {
+            yield elem;
+        }
+    }
+}
+
 function *$take (iter, number) {
     for (let i = 0; i < number; i++) {
         let elem = iter.next();
@@ -70,6 +81,10 @@ export default class Query {
 
     reduce (transformer, initialValue) {
         return $reduce(this[CURSOR], transformer, initialValue);
+    }
+
+    skip (number) {
+        return new Query($skip(this[CURSOR], number));
     }
 
     take (number) {

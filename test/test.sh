@@ -17,4 +17,4 @@ ${bin}/6to5-node test/Idaten.Plugins.Query.js
 ${bin}/6to5-node test/Idaten.Plugins.View.js
 
 ## Benchmark
-${bin}/6to5-node test/benchmark.js
+# ${bin}/6to5-node test/benchmark.js

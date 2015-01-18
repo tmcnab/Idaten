@@ -26,6 +26,8 @@ Test.Suite(TEST_NAME, function* () {
         Test.that(q.filter);
         Test.that(q.map);
         Test.that(q.reduce);
+        Test.that(q.skip);
+        Test.that(q.take);
         Test.that(q.toArray);
     });
 
@@ -59,6 +61,24 @@ Test.Suite(TEST_NAME, function* () {
         let testName = `${testPerson.name.first} ${testPerson.name.last}`;
         Test.that(r[273] === testName);
     });
+
+    yield Test.Unit(".query.skip() functions correctly", () => {
+        let q = store.query.skip(500);
+        let r = q.toArray();
+        Test.that(q instanceof Query, 'result is not a Query object');
+        Test.that(r.length === 500, `result length expected 500, got ${r.length}`);
+
+
+        // Test that if store contains 4 elements and attempt is to skip 5,
+        // it will return no values once toArray() is called.
+        let store2 = new Idaten.Store();
+        store2.use(Idaten.Plugins.Query);
+        let testData = [Test.DATA[1], Test.DATA[3], Test.DATA[5], Test.DATA[7]];
+        store2.save(testData);
+        const qlength = store2.query.skip(5).toArray().length;
+        Test.that(qlength === 0, `expected length to be 0, saw ${qlength}`);
+    });
+
 
     yield Test.Unit(".query.take() functions correctly", () => {
         let q = store.query.take(5);
