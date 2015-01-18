@@ -23,7 +23,7 @@ function $singleSave () {
     const start = Date.now();
 
     for (let counter = 0; counter < 1e3; counter++) {
-        store.save(fakeRecord);
+        store.save(fakeRecord, true);
     }
 
     return (Date.now() - start);
@@ -36,7 +36,7 @@ function $multiSave () {
     fakeSequence.fill(fakeRecord);
 
     const start = Date.now();
-    store.save(fakeSequence);
+    store.save(fakeSequence, true);
     return (Date.now() - start);
 }
 
