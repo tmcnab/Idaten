@@ -6,9 +6,6 @@
 **  collapse the iterator down to a non-iterator (like reduce or toArray).
 **
 **  Unresolved issues:
-**      - if a consumer passes in a predicate, that predicate is able to modify properties. Either the members
-**        of Query should clone when invoking a transformer/predicate (so bad) or the Store should freeze objects
-**        on insertion (also bad).
 **      - from a performance standpoint, should every member type-check their argument(s)?
 */
 import Idaten from "..";
@@ -16,10 +13,6 @@ import Idaten from "..";
 
 const CURSOR = Symbol();
 
-
-function $clone (value) {
-    return JSON.parse(JSON.stringify(value));
-}
 
 function *$filter (iter, pred) {
     for (let elem of iter) {
@@ -32,7 +25,7 @@ function *$filter (iter, pred) {
 function $find (iter, predicate) {
     for (let elem of iter) {
         if (predicate(elem)) {
-            return $clone(elem);
+            return elem;
         }
     }
 
@@ -113,7 +106,7 @@ export default class Query {
         do {
             let obj = this[CURSOR].next();
             if (!obj.done) {
-                result.push($clone(obj.value));
+                result.push(obj.value);
             } else {
                 done = obj.done;
             }
