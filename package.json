@@ -1,5 +1,5 @@
 {
-  "name": "Idaten",
+  "name": "idaten",
   "version": "0.1.0",
   "description": "A modular, in-process data store built using ES6 features.",
   "main": "index.js",

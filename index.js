@@ -5,13 +5,11 @@ import Store from './core/Store';
 
 
 // Plugin Imports.
-import Console from './plugins/ConsolePlugin';
-import Log from './plugins/LogPlugin';
 import Query from './plugins/QueryPlugin';
 
 
 // Exports.
 export default {
     Key, Plugin, Store,
-    Plugins: { Console, Log, Query }
+    Plugins: { Query }
 };
