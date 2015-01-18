@@ -5,18 +5,18 @@ export default class Plugin {
     }
 
     afterDestroy (objectSequence) {
-        return objectSequence;
+
     }
 
     afterSave (tupleSequence) {
-        return tupleSequence;
+
     }
 
     beforeDestroy (keyValueTupleSequence) {
-        return keyValueTupleSequence;
+
     }
 
     beforeSave (object) {
-        return object;
+        
     }
 }

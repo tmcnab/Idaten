@@ -10,9 +10,11 @@ let WARE = Symbol();
 
 
 // Utility functions. Probably need to be looked at for perf.
-let $clone = (o) => JSON.parse(JSON.stringify(o));
-let $freeze = (o) => { Object.freeze(o); return o; };
-
+let $prepare = (o) => {
+    let d = JSON.parse(JSON.stringify(o));
+    Object.freeze(d);
+    return d;
+};
 
 export default class Store {
 
@@ -39,9 +41,8 @@ export default class Store {
             let sequence = idOrIds instanceof Array ? idOrIds : [idOrIds];
 
             // Convert sequence to sorted array<string> if not already
+            // TODO
             sequence = sequence.map(id => id.toString()).sort();
-
-            // console.log(sequence);
 
             // Match all the elements in data map which correspond to requested ids
             // TODO this really needs some perf love
@@ -51,23 +52,22 @@ export default class Store {
             let elements = [];
             for (let [key, value] of this[DATA].entries()) {
                 if (sequence.indexOf(key.id) > -1) {
-                    elements.push([key, $clone(value)]);
+                    elements.push([key, value]);
                 }
             }
 
-            // console.log(elements);
-
-            // Invoke the beforeDestroy actions on every plugin, they should return the same format input.
-            this[WARE].forEach(p => { elements = p.beforeDestroy(elements); });
+            // Invoke the beforeDestroy actions on every plugin.
+            this[WARE].forEach(plugin => {
+                let result = p.beforeDestroy(elements);
+                elements = result ? result : elements;
+            });
 
             // Destroy the elements in the core data map.
             let destroyedElements = elements.map(k => [k[0], this[DATA].delete(k[0])]);
 
-            // Notifiy plugins that the items in destroyedElements were removed. The afterDestroy action should not
-            // be throwing errors, so we'll wrap it.
-            try { this[WARE].forEach(plugin => plugin.afterDestroy(destroyedElements)); }
-            catch (e) { }
-            finally { return destroyedElements; }
+            // Notifiy plugins that the items in destroyedElements were removed.
+            this[WARE].forEach(plugin => plugin.afterDestroy(destroyedElements));
+            return destroyedElements;
         };
 
 
@@ -97,7 +97,8 @@ export default class Store {
 
             // For every plugin, call the beforeSave function.
             this[WARE].forEach(plugin => {
-                sequence = plugin.beforeSave(sequence);
+                let result = plugin.beforeSave(sequence);
+                sequence = result ? result : sequence;
             });
 
             // Save the sequence, return key-val tuples.
@@ -114,16 +115,13 @@ export default class Store {
                     }
                 }
 
-
-                this[DATA].set(key, val = $clone(elem));
-                return [oldKey, key, val];
+                this[DATA].set(key, val = $prepare(elem));
+                return [key, val, oldKey];
             });
 
-            // For every plugin, call the afterSave function. The afterSave function is not supposed to throw errors
-            // so we will wrap them and ignore the errors.
-            try { this[WARE].forEach(p => p.afterSave(pairsSequence)); }
-            catch (e) {}
-            finally { return pairsSequence.map(ts => ts[0]); }
+            // For every plugin, call the afterSave function and return a [oldKey, newKey] tuple.
+            this[WARE].forEach(p => p.afterSave(pairsSequence));
+            return pairsSequence.map(ts => [ts[2], ts[0]]);
         };
 
         return sync ? performTransaction() : new Promise((success, failure) => {
