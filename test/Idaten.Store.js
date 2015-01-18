@@ -5,8 +5,8 @@ import Test from './test';
 const TEST_NAME = "Idaten.Store";
 
 
-Test.Suite(TEST_NAME, function* ()
-{
+Test.Suite(TEST_NAME, function* () {
+
     yield Test.Unit("Create a new store", () => {
         let store = new Idaten.Store();
     });
@@ -80,6 +80,15 @@ Test.Suite(TEST_NAME, function* ()
         store.save(patient, true);
 
         Test.that(store.__data__.size === 1, `Saw ${store.__data__.size}, expected 1`);
+    });
+
+    yield Test.Unit("Save an object without an id", () => {
+        let store = new Idaten.Store();
+        let object = { name: 'Peter Parker', age: 27 };
+        let result = store.save(object, true);
+
+        Test.that(result.length === 1);
+        Test.that(store.__data__.size === 1);
     });
 
     //== .destroy() tests ==//
@@ -204,7 +213,3 @@ Test.Suite(TEST_NAME, function* ()
         Test.that(store.__plugins__[0].store === store);
     });
 });
-
-/*
-let store = new Idaten.Store();
-*/
