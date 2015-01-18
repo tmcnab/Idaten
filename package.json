@@ -12,6 +12,7 @@
     "6to5": "^2.12.6"
   },
   "dependencies": {
+    "buffered-file-line-reader-sync": "^0.1.0",
     "node-uuid": "^1.4.2"
   },
   "repository": {

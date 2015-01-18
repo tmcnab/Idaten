@@ -58,7 +58,7 @@ export default class Store {
 
             // Invoke the beforeDestroy actions on every plugin.
             this[WARE].forEach(plugin => {
-                let result = p.beforeDestroy(elements);
+                let result = plugin.beforeDestroy(elements);
                 elements = result ? result : elements;
             });
 
