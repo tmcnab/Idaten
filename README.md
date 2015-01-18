@@ -40,3 +40,6 @@ Setup
 To use in your personal projects, `6to5` is recommended. To import the module
 you will need to use `require("6to5/register")({ ignore: false });` before
 importing Idaten. This will prevent 6to5 from ignoring Idaten.
+
+For more information on how to write a plugin or how Idaten works please visit the
+[wiki](https://github.com/tmcnab/Idaten/wiki).
