@@ -1,9 +1,15 @@
-// Imports.
+/*
+**
+*/
 import Idaten from "..";
 
 
 const CURSOR = Symbol();
 
+
+function $clone (value) {
+    return JSON.parse(JSON.stringify(value));
+}
 
 function *$filter (iter, pred) {
     for (let elem of iter) {
@@ -38,18 +44,12 @@ function *$take (iter, number) {
     }
 }
 
-function $clone (value) {
-    return JSON.parse(JSON.stringify(value));
-}
-
 
 export default class Query {
     constructor (iterator) {
         this[CURSOR] = iterator;
     }
 
-    // returns a new query of elements that the predicate returns true for.
-    // RETURNS QUERY
     filter (predicate) {
         return new Query( $filter(this[CURSOR], predicate) );
     }
@@ -67,8 +67,6 @@ export default class Query {
         return new Query( $take(this[CURSOR], number) );
     }
 
-    // terminates the query, returns array of elements left over.
-    // RETURNS ARRAY
     toArray () {
         let result = [];
 
