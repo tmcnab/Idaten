@@ -24,6 +24,7 @@ Test.Suite(TEST_NAME, function* () {
         let q = store.query;
 
         Test.that(q.filter);
+        Test.that(q.find);
         Test.that(q.map);
         Test.that(q.reduce);
         Test.that(q.skip);
@@ -37,6 +38,11 @@ Test.Suite(TEST_NAME, function* () {
 
         let r = q.toArray();
         Test.that(r.length === 518);
+    });
+
+    yield Test.Unit(".query.find() functions correctly", () => {
+        let r = store.query.find(p => p.address.state === 'California');
+        Test.that(r !== null);
     });
 
     yield Test.Unit(".query.map() functions correctly", () => {
@@ -78,7 +84,6 @@ Test.Suite(TEST_NAME, function* () {
         const qlength = store2.query.skip(5).toArray().length;
         Test.that(qlength === 0, `expected length to be 0, saw ${qlength}`);
     });
-
 
     yield Test.Unit(".query.take() functions correctly", () => {
         let q = store.query.take(5);

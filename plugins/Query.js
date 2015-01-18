@@ -29,6 +29,17 @@ function *$filter (iter, pred) {
     }
 }
 
+function $find (iter, predicate) {
+    for (let elem of iter) {
+        if (predicate(elem)) {
+            return $clone(elem);
+        }
+    }
+
+    return null;
+}
+
+
 function *$map (iter, trans) {
     for (let el of iter) {
         yield trans(el);
@@ -73,6 +84,10 @@ export default class Query {
 
     filter (predicate) {
         return new Query($filter(this[CURSOR], predicate));
+    }
+
+    find (predicate) {
+        return $find(this[CURSOR], predicate);
     }
 
     map (transformer) {
