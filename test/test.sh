@@ -8,7 +8,10 @@ clear
 rm -f test/*.log
 
 
-# Run all tests.
+## Core Package Tests
 ${bin}/6to5-node test/Idaten.Key.js
 ${bin}/6to5-node test/Idaten.Plugin.js
 ${bin}/6to5-node test/Idaten.Store.js
+
+## Bundled Plugin Tests
+${bin}/6to5-node test/Idaten.Plugins.Query.js

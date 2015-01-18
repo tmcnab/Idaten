@@ -21,7 +21,7 @@ export function Unit (name, fn) {
         if (wasClean) {
             console.log(`\t${TICK} ${name}`);
         } else {
-            console.error(`\t${CROSS} ${name} [${err.message}]\n`);
+            console.error(`\t${CROSS} ${name} [${err.message}]`);
             if (err.stack)
                 console.error(err.stack);
         }
@@ -56,6 +56,10 @@ export function throws (fn, message) {
         throw new Error("didn't throw when it was supposed to");
     }
 }
+
+
+export let NotImplementedError = new Error('Test Not Implemented');
+NotImplementedError.stack = undefined;
 
 
 // Defining a getter on the exports because loading the giant

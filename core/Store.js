@@ -97,7 +97,7 @@ export default class Store {
 
             // For every plugin, call the beforeSave function.
             this[WARE].forEach(plugin => {
-                sequence = p.beforeSave(sequence);
+                sequence = plugin.beforeSave(sequence);
             });
 
             // Save the sequence, return key-val tuples.
