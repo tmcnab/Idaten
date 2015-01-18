@@ -102,21 +102,20 @@ export default class Store {
 
             // Save the sequence, return key-val tuples.
             let pairsSequence = sequence.map(elem => {
-                let key, val, oldKey;
+                let key = new Key(elem.id), val, oldKey;
+                elem.id = elem.id || key.id;
 
                 // Find old key.
                 for (let dk of this[DATA].keys()) {
-                    if (dk.id === elem.id.toString()) {
+                    if (elem.id && dk.id === elem.id) {
                         oldKey = dk;
                         this[DATA].delete(oldKey);
                         break;
                     }
                 }
 
-                this[DATA].set(
-                    key = new Key(elem.id.toString()),
-                    val = $clone(elem)
-                );
+
+                this[DATA].set(key, val = $clone(elem));
                 return [oldKey, key, val];
             });
 

@@ -13,7 +13,7 @@ export default class Plugin {
     }
 
     beforeDestroy (keyValueTupleSequence) {
-        return keyValueSequence;
+        return keyValueTupleSequence;
     }
 
     beforeSave (object) {
