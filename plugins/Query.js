@@ -27,6 +27,17 @@ function $reduce (iter, trans, initial) {
     return initial;
 }
 
+function *$take (iter, number) {
+    for (let i = 0; i < number; i++) {
+        let elem = iter.next();
+        if (elem.done) {
+            break
+        } else {
+            yield elem.value;
+        }
+    }
+}
+
 function $clone (value) {
     return JSON.parse(JSON.stringify(value));
 }
@@ -49,6 +60,11 @@ export default class Query {
 
     reduce (transformer, initialValue) {
         return $reduce(this[CURSOR], transformer, initialValue);
+    }
+
+    take (number) {
+        // TODO assert number is integer.
+        return new Query( $take(this[CURSOR], number) );
     }
 
     // terminates the query, returns array of elements left over.

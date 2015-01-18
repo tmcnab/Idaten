@@ -6,8 +6,8 @@ import Test from './test';
 const TEST_NAME = "Idaten.Plugins.Query";
 
 
-Test.Suite(TEST_NAME, function* ()
-{
+Test.Suite(TEST_NAME, function* () {
+
     let store = new Idaten.Store();
     store.use(Idaten.Plugins.Query);
     store.save(Test.DATA, true);
@@ -60,6 +60,22 @@ Test.Suite(TEST_NAME, function* ()
         Test.that(r[273] === testName);
     });
 
+    yield Test.Unit(".query.take() functions correctly", () => {
+        let q = store.query.take(5);
+        let r = q.toArray();
+        Test.that(q instanceof Query, 'result is not a Query object');
+        Test.that(r.length === 5);
+
+
+        // Test that if store contains 4 elements and attempt is to take 5,
+        // it will only take 4.
+        let store2 = new Idaten.Store();
+        store2.use(Idaten.Plugins.Query);
+        let testData = [Test.DATA[1], Test.DATA[3], Test.DATA[5], Test.DATA[7]];
+        store2.save(testData);
+        Test.that(store2.query.take(5).toArray().length === 4);
+    });
+
     yield Test.Unit(".query.toArray() functions correctly", () => {
         let results = store.query.toArray();
         let DATA = Test.DATA;
@@ -68,4 +84,5 @@ Test.Suite(TEST_NAME, function* ()
         Test.that(results[0].id === DATA[0].id);
         Test.that(results[20].id === DATA[20].id);
     });
+
 });
