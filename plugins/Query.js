@@ -1,5 +1,15 @@
 /*
+**  Docs    https://github.com/tmcnab/Idaten/wiki/Idaten.Plugins.Query
+**  Test    /test/Idaten.Plugins.Query.js
 **
+**  The Query type takes in an iterator and exposes a number of members which themselves return Query instances or
+**  collapse the iterator down to a non-iterator (like reduce or toArray).
+**
+**  Unresolved issues:
+**      - if a consumer passes in a predicate, that predicate is able to modify properties. Either the members
+**        of Query should clone when invoking a transformer/predicate (so bad) or the Store should freeze objects
+**        on insertion (also bad).
+**      - from a performance standpoint, should every member type-check their argument(s)?
 */
 import Idaten from "..";
 
@@ -51,11 +61,11 @@ export default class Query {
     }
 
     filter (predicate) {
-        return new Query( $filter(this[CURSOR], predicate) );
+        return new Query($filter(this[CURSOR], predicate));
     }
 
     map (transformer) {
-        return new Query( $map(this[CURSOR], transformer) );
+        return new Query($map(this[CURSOR], transformer));
     }
 
     reduce (transformer, initialValue) {
@@ -63,8 +73,7 @@ export default class Query {
     }
 
     take (number) {
-        // TODO assert number is integer.
-        return new Query( $take(this[CURSOR], number) );
+        return new Query($take(this[CURSOR], number));
     }
 
     toArray () {
