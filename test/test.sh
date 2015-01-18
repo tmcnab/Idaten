@@ -4,7 +4,6 @@ bin=./node_modules/.bin
 
 
 # clear screen, destroy any log files in test dir.
-clear
 rm -f test/*.log
 
 
