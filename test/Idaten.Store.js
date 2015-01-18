@@ -5,32 +5,13 @@ import Test from './test';
 const TEST_NAME = "Idaten.Store";
 
 
-class Patient {
-    constructor () {
-        this.id = String;
-        this.gender = String;
-        this.name = {
-            first: String,
-            last: String
-        };
-        this.ssn = String;
-        this.prescriptions = Array;
-        this.address = {
-            street: String,
-            state: String,
-            code: String,
-            country: String
-        };
-        this.phone = String;
-    }
-}
-
-
 Test.Suite(TEST_NAME, function* ()
 {
     yield Test.Unit("Create a new store", () => {
         let store = new Idaten.Store();
     });
+
+    //== .save() tests ==//
 
     yield Test.Unit("Save a single object (sync)", () => {
         let store = new Idaten.Store();
@@ -100,6 +81,8 @@ Test.Suite(TEST_NAME, function* ()
 
         Test.that(store.__data__.size === 1, `Saw ${store.__data__.size}, expected 1`);
     });
+
+    //== .destroy() tests ==//
 
     yield Test.Unit("Save, destroy single object (sync)", () => {
         let store = new Idaten.Store();
@@ -185,6 +168,40 @@ Test.Suite(TEST_NAME, function* ()
         }, e => {
             throw e;
         });
+    });
+
+    //== .use() tests ==//
+
+    class TestPlugin extends Idaten.Plugin {
+        constructor (store) {
+            this.store = store;
+        }
+    }
+
+    yield Test.Unit("Correctly loads plugins", () => {
+        let store = new Idaten.Store();
+
+        store.use(TestPlugin);
+        Test.that(store.__plugins__.length === 1);
+        Test.that(store.__plugins__[0] instanceof TestPlugin);
+        Test.that(store.__plugins__[0].store === store);
+    });
+
+    yield Test.Unit("Throws error if not derived from Idaten.Plugin", () => {
+        let store = new Idaten.Store();
+
+        Test.throws(() => { store.use({}); });
+    });
+
+    yield Test.Unit("Only loads a plugin once", () => {
+        let store = new Idaten.Store();
+
+        store.use(TestPlugin);
+        store.use(TestPlugin);
+
+        Test.that(store.__plugins__.length === 1, `found ${store.__plugins__.length}, expected 1`);
+        Test.that(store.__plugins__[0] instanceof TestPlugin);
+        Test.that(store.__plugins__[0].store === store);
     });
 });
 

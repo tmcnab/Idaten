@@ -137,9 +137,16 @@ export default class Store {
         });
     }
 
-    use (Plugin) {
+    use (CustomPlugin) {
         // TODO check that it derives from Idaten.Plugin
-        let instance = new Plugin(this);
-        this[WARE].push(instance);
+        let instance = new CustomPlugin(this);
+
+        if (!(instance instanceof Plugin)) {
+            throw new TypeError("Custom plugins must derive from Idaten.Plugin");
+        }
+
+        if (!this[WARE].some(plugin => plugin instanceof CustomPlugin)) {
+            this[WARE].push(instance);
+        }
     }
 }

@@ -21,7 +21,7 @@ export function Unit (name, fn) {
         if (wasClean) {
             console.log(`\t${TICK} ${name}`);
         } else {
-            console.error(`\t${CROSS} ${name} (${err.message})\n`);
+            console.error(`\t${CROSS} ${name} [${err.message}]\n`);
             if (err.stack)
                 console.error(err.stack);
         }
