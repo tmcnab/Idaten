@@ -17,11 +17,11 @@ export default class LogPlugin extends Plugin {
         });
     }
 
-    afterSave (kvtkSequence) {
-        this[LOG].save(kvtkSequence);
+    afterSave (sequence) {
+        this[LOG].save(sequence);
     }
 
-    afterDestroy (seq) {
-        this[LOG].remove(seq);
+    afterDestroy (sequence) {
+        this[LOG].remove(sequence);
     }
 }

@@ -8,7 +8,7 @@ rm -f test/*.log
 
 
 ## Core Package Tests
-${bin}/6to5-node test/Idaten.Key.js
+${bin}/6to5-node test/Idaten.Core.js
 ${bin}/6to5-node test/Idaten.Plugin.js
 ${bin}/6to5-node test/Idaten.Store.js
 

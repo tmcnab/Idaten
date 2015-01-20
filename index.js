@@ -1,5 +1,4 @@
 // Core Imports.
-import Key from './core/Key';
 import Plugin from './core/Plugin';
 import Store from './core/Store';
 
@@ -12,6 +11,6 @@ import View from './plugins/ViewPlugin';
 
 // Exports.
 export default {
-    Key, Plugin, Store,
+    Plugin, Store,
     Plugins: { Log, Query, View }
 };

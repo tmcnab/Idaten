@@ -1,6 +1,6 @@
 {
   "name": "idaten",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A modular, in-process data store built using ES6 features.",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "buffered-file-line-reader-sync": "^0.1.0",
+    "microtime": "^1.2.0",
     "node-uuid": "^1.4.2"
   },
   "repository": {

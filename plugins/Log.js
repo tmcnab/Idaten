@@ -1,6 +1,5 @@
 import { Buffer } from 'buffer';
 import fsys from 'fs';
-import Key from '../core/Key';
 import path from 'path';
 import Reader from 'buffered-file-line-reader-sync';
 
@@ -9,16 +8,13 @@ const PATH = Symbol();      // File Path
 const STORE = Symbol();     // Store reference
 
 
-const $destroyRow = (r) => `-\t-1\t${r[0].ts}\t${r[0].id}\n`;
-const $saveRow = (r) => `+\t${r[2]?r[2].ts:-1}\t${r[0].ts}\t${r[0].id}\t${JSON.stringify(r[1])}\n`;
+const $destroyRow = (r) => `-\t${r.ts}\t${r.id}\n`;
+const $saveRow = (r) => `+\t${r.ts}\t${r.id}\t${JSON.stringify(r)}\n`;
 const $write = (fp, bf) => fsys.appendFileSync(fp, bf, { flag: 'a+' });
-const $freeze = (o) => {
-    Object.freeze(o);
-    return o;
-};
 
 
 export default class Log {
+
     constructor (store) {
         this[PATH] = path.join(process.cwd(), 'idaten.log');
         this[STORE] = store;
@@ -32,17 +28,16 @@ export default class Log {
             data.clear();
 
             while(reader.hasNextLine()) {
-                let [operation, ots, nts, id, obj] = reader.nextLine().split('\t');
-                ots = parseInt(ots, 10);
-                let key = new Key(id, parseInt(nts, 10));
+                let [operation, ts, id, obj] = reader.nextLine().split('\t');
+                ts = Number(ts, 10);
 
                 switch (operation) {
                     case '+': {
-                        data.set(key, $freeze(JSON.parse(obj)));
+                        data.upsert(JSON.parse(obj));
                     } break;
 
                     case '-': {
-                        data.delete(key);
+                        data.drop(id);
                     } break;
 
                     default: {
@@ -66,15 +61,13 @@ export default class Log {
 
     remove (sequence) {
         $write(this[PATH], new Buffer(
-            sequence.reduce((content, element) => content + $destroyRow(element), ""),
-            "utf-8"
+            sequence.reduce((content, element) => content + $destroyRow(element), "")
         ));
     }
 
     save (sequence) {
         $write(this[PATH], new Buffer(
-            sequence.reduce((content, element) => (element[1] ? content + $saveRow(element) : content), ""),
-            "utf-8"
+            sequence.reduce((content, element) => content + $saveRow(element), "")
         ));
     }
 

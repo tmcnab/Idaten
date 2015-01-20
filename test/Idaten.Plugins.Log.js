@@ -59,8 +59,6 @@ Test.Suite(TEST_NAME, function* () {
         rehydrated.use(Idaten.Plugins.Log);
         rehydrated.log.path = PATH;
         rehydrated.log.load(true);
-
-        console.log(rehydrated.query.toArray().length);
     });
 
 });
